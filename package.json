@@ -34,6 +34,7 @@
     "expo-notifications": "~0.32.17",
     "expo-sms": "~14.0.8",
     "expo-status-bar": "~3.0.9",
+    "expo-system-ui": "~6.0.9",
     "expo-task-manager": "~14.0.9",
     "expo-web-browser": "~15.0.11",
     "express": "^5.2.1",

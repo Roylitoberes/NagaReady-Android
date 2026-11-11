@@ -14,6 +14,7 @@ import {
   StatusBar,
   Image,
   Modal,
+  useWindowDimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
@@ -27,16 +28,18 @@ export interface LoginFormPageProps {
   onGuestMode: () => void;
 }
 
-// Design tokens (same as LoginPage)
+// Design tokens
 const COLORS = {
-  red: '#B00000',
-  redTint: '#FDECEC',
+  red: '#E10000',
+  redDark: '#B00000',
+  redTint: '#FDE8E8',
+  black: '#141414',
   white: '#FFFFFF',
-  ink: '#1A1111',
-  gray: '#6B6464',
-  grayLight: '#9A9393',
-  field: '#F6F2F2',
-  line: '#E6DEDE',
+  ink: '#0F0F0F',
+  gray: '#2B3445',
+  grayLight: '#9A9A9A',
+  field: '#F1F1F1',
+  line: '#DADADA',
 };
 
 const STATUS_BAR = Platform.OS === 'ios' ? 54 : (StatusBar.currentHeight ?? 24) + 8;
@@ -47,6 +50,8 @@ export default function LoginFormPage({
   onRegisterNow,
   onGuestMode,
 }: LoginFormPageProps) {
+  const { width } = useWindowDimensions();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -155,137 +160,153 @@ export default function LoginFormPage({
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.red} />
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
 
-      {/* Header – solid red, big logo, no border */}
-      <View style={styles.header}>
+      {/* Top-right decoration */}
+      <View style={styles.topBlack} />
+      <View style={styles.topCircleBig} />
+      <View style={styles.topCircleDark} />
+
+      {/* Bottom-right decoration */}
+      <View style={[styles.bottomCircleDark, { right: -width * 0.4 }]} pointerEvents="none" />
+      <View style={[styles.bottomCircle, { right: -width * 0.5 }]} pointerEvents="none" />
+
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Back */}
         <TouchableOpacity onPress={onBack} style={styles.backButton} activeOpacity={0.8}>
-          <Ionicons name="arrow-back" size={24} color={COLORS.white} />
+          <Ionicons name="arrow-back" size={22} color={COLORS.ink} />
         </TouchableOpacity>
 
-        <Image
-          source={require('../assets/adaptive-icon2.png')}
-          style={styles.headerImage}
-          resizeMode="contain"
-        />
-        <Text style={styles.brandText}>
-          NAGA-<Text style={styles.brandHighlight}>READY</Text>
-        </Text>
-        <Text style={styles.subtitleText}>Login to your NagaReady account</Text>
-      </View>
-
-      {/* White sheet */}
-      <View style={styles.sheet}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
-          <Text style={styles.welcomeText}>Welcome Back!</Text>
-          <Text style={styles.welcomeSub}>Enter your details to continue.</Text>
-
-          {/* Email */}
-          <View style={styles.inputWrapper}>
-            <Text style={styles.inputLabel}>Email Address</Text>
-            <View style={[styles.inputContainer, focused === 'email' && styles.inputFocused]}>
-              <Ionicons name="mail-outline" size={20} color={COLORS.red} style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your email address"
-                placeholderTextColor={COLORS.grayLight}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-                autoComplete="email"
-                returnKeyType="next"
-                value={email}
-                onChangeText={setEmail}
-                onFocus={() => setFocused('email')}
-                onBlur={() => setFocused(null)}
-                onSubmitEditing={() => passwordRef.current?.focus()}
-              />
+        {/* Logo */}
+        <View style={styles.logoRow}>
+          <Image
+            source={require('../assets/adaptive-icon2.png')}
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
+          <View style={styles.logoTextWrap}>
+            <Text style={styles.logoText}>
+              NAGA-<Text style={styles.logoTextRed}>READY</Text>
+            </Text>
+            <View style={styles.pulseRow}>
+              <View style={styles.pulseLine} />
+              <Ionicons name="pulse" size={14} color={COLORS.red} />
+              <View style={styles.pulseLine} />
             </View>
           </View>
+        </View>
 
-          {/* Password */}
-          <View style={styles.inputWrapper}>
-            <Text style={styles.inputLabel}>Password</Text>
-            <View style={[styles.inputContainer, focused === 'password' && styles.inputFocused]}>
+        <Text style={styles.welcomeText}>Welcome Back!</Text>
+        <Text style={styles.welcomeSub}>Enter your details to continue.</Text>
+
+        {/* Email */}
+        <View style={styles.inputWrapper}>
+          <Text style={styles.inputLabel}>Email Address</Text>
+          <View style={[styles.inputContainer, focused === 'email' && styles.inputFocused]}>
+            <Ionicons name="mail-outline" size={20} color={COLORS.red} style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email address"
+              placeholderTextColor={COLORS.grayLight}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="email"
+              returnKeyType="next"
+              value={email}
+              onChangeText={setEmail}
+              onFocus={() => setFocused('email')}
+              onBlur={() => setFocused(null)}
+              onSubmitEditing={() => passwordRef.current?.focus()}
+            />
+          </View>
+        </View>
+
+        {/* Password */}
+        <View style={styles.inputWrapper}>
+          <Text style={styles.inputLabel}>Password</Text>
+          <View style={[styles.inputContainer, focused === 'password' && styles.inputFocused]}>
+            <Ionicons
+              name="lock-closed-outline"
+              size={20}
+              color={COLORS.red}
+              style={styles.inputIcon}
+            />
+            <TextInput
+              ref={passwordRef}
+              style={styles.input}
+              placeholder="Enter your password"
+              placeholderTextColor={COLORS.grayLight}
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+              autoComplete="password"
+              returnKeyType="done"
+              value={password}
+              onChangeText={setPassword}
+              onFocus={() => setFocused('password')}
+              onBlur={() => setFocused(null)}
+              onSubmitEditing={handleLogin}
+            />
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
               <Ionicons
-                name="lock-closed-outline"
-                size={20}
-                color={COLORS.red}
-                style={styles.inputIcon}
+                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                size={22}
+                color={COLORS.gray}
               />
-              <TextInput
-                ref={passwordRef}
-                style={styles.input}
-                placeholder="Enter your password"
-                placeholderTextColor={COLORS.grayLight}
-                secureTextEntry={!showPassword}
-                autoCapitalize="none"
-                autoComplete="password"
-                returnKeyType="done"
-                value={password}
-                onChangeText={setPassword}
-                onFocus={() => setFocused('password')}
-                onBlur={() => setFocused(null)}
-                onSubmitEditing={handleLogin}
-              />
-              <TouchableOpacity
-                onPress={() => setShowPassword(!showPassword)}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              >
-                <Ionicons
-                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                  size={22}
-                  color={COLORS.gray}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <TouchableOpacity style={styles.forgotPassword} onPress={handleForgotPassword}>
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-          </TouchableOpacity>
-
-          {/* Login */}
-          <TouchableOpacity
-            style={[styles.loginButton, isLoading && styles.buttonDisabled]}
-            onPress={handleLogin}
-            disabled={isLoading}
-            activeOpacity={0.85}
-          >
-            {isLoading ? (
-              <ActivityIndicator size="small" color={COLORS.white} />
-            ) : (
-              <Text style={styles.loginButtonText}>Login</Text>
-            )}
-          </TouchableOpacity>
-
-          {/* Divider */}
-          <View style={styles.dividerContainer}>
-            <View style={styles.divider} />
-            <Text style={styles.dividerText}>or</Text>
-            <View style={styles.divider} />
-          </View>
-
-          {/* Guest */}
-          <TouchableOpacity style={styles.guestButton} onPress={onGuestMode} activeOpacity={0.7}>
-            <Ionicons name="person-outline" size={20} color={COLORS.red} />
-            <Text style={styles.guestButtonText}>Continue as Guest</Text>
-            <Ionicons name="arrow-forward" size={18} color={COLORS.red} />
-          </TouchableOpacity>
-
-          {/* Register */}
-          <View style={styles.registerContainer}>
-            <Text style={styles.registerText}>Don't have an account? </Text>
-            <TouchableOpacity onPress={onRegisterNow}>
-              <Text style={styles.registerLinkText}>Register Now</Text>
             </TouchableOpacity>
           </View>
-        </ScrollView>
-      </View>
+        </View>
+
+        <TouchableOpacity style={styles.forgotPassword} onPress={handleForgotPassword}>
+          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+        </TouchableOpacity>
+
+        {/* Login */}
+        <TouchableOpacity
+          style={[styles.loginButton, isLoading && styles.buttonDisabled]}
+          onPress={handleLogin}
+          disabled={isLoading}
+          activeOpacity={0.85}
+        >
+          {isLoading ? (
+            <ActivityIndicator size="small" color={COLORS.white} />
+          ) : (
+            <Text style={styles.loginButtonText}>Login</Text>
+          )}
+        </TouchableOpacity>
+
+        {/* Register link */}
+        <View style={styles.registerRow}>
+          <Text style={styles.registerPrompt}>Don't have an account?</Text>
+          <TouchableOpacity
+            onPress={onRegisterNow}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Text style={styles.registerLink}>Register</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Divider */}
+        <View style={styles.dividerContainer}>
+          <View style={styles.divider} />
+          <Text style={styles.dividerText}>OR</Text>
+          <View style={styles.divider} />
+        </View>
+
+        {/* Guest */}
+        <TouchableOpacity style={styles.guestButton} onPress={onGuestMode} activeOpacity={0.7}>
+          <Ionicons name="person-outline" size={20} color={COLORS.red} />
+          <Text style={styles.guestButtonText}>Continue as Guest</Text>
+          <Ionicons name="arrow-forward" size={18} color={COLORS.red} />
+        </TouchableOpacity>
+      </ScrollView>
 
       {/* Forgot Password Modal */}
       <Modal
@@ -353,78 +374,124 @@ export default function LoginFormPage({
 }
 
 const styles = StyleSheet.create({
-  // Pure solid red background
   container: {
     flex: 1,
+    backgroundColor: COLORS.white,
+    overflow: 'hidden',
+  },
+
+  // Decorations
+  topBlack: {
+    position: 'absolute',
+    top: -138,
+    right: -176,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    backgroundColor: COLORS.black,
+  },
+  topCircleBig: {
+    position: 'absolute',
+    top: -150,
+    right: -170,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    backgroundColor: COLORS.red,
+  },
+  topCircleDark: {
+    position: 'absolute',
+    top: -200,
+    right: -200,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    backgroundColor: COLORS.redDark,
+  },
+  bottomCircleDark: {
+    position: 'absolute',
+    bottom: -250,
+    width: 340,
+    height: 340,
+    borderRadius: 170,
+    backgroundColor: COLORS.redDark,
+  },
+  bottomCircle: {
+    position: 'absolute',
+    bottom: -280,
+    width: 340,
+    height: 340,
+    borderRadius: 170,
     backgroundColor: COLORS.red,
   },
 
-  // Header
-  header: {
-    alignItems: 'center',
-    paddingTop: STATUS_BAR,
-    paddingBottom: 24,
-    paddingHorizontal: 24,
-  },
-  backButton: {
-    position: 'absolute',
-    top: STATUS_BAR,
-    left: 20,
-    zIndex: 10,
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: 'rgba(255, 255, 255, 0.18)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  // Big logo – no border, no box
-  headerImage: {
-    width: 150,
-    height: 150,
-  },
-  brandText: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: COLORS.white,
-    letterSpacing: 1.5,
-    marginTop: 2,
-  },
-  brandHighlight: {
-    color: '#FFD3D3',
-  },
-  subtitleText: {
-    fontSize: 14,
-    color: COLORS.white,
-    opacity: 0.92,
-    marginTop: 6,
-    letterSpacing: 0.3,
-  },
-
-  // White sheet
-  sheet: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-    borderTopLeftRadius: 36,
-    borderTopRightRadius: 36,
-  },
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 24,
-    paddingTop: 30,
-    paddingBottom: 32,
+    paddingTop: STATUS_BAR,
+    paddingBottom: 40,
   },
+
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.field,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+
+  // Logo
+  logoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    marginBottom: 22,
+  },
+  logoImage: {
+    width: 58,
+    height: 58,
+    borderRadius: 14,
+    backgroundColor: COLORS.black,
+  },
+  logoTextWrap: {
+    alignItems: 'stretch',
+  },
+  logoText: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: COLORS.ink,
+    letterSpacing: 0.5,
+  },
+  logoTextRed: {
+    color: COLORS.red,
+  },
+  pulseRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
+  },
+  pulseLine: {
+    flex: 1,
+    height: 2,
+    backgroundColor: COLORS.red,
+  },
+
   welcomeText: {
-    fontSize: 28,
-    fontWeight: '800',
+    fontSize: 34,
+    fontWeight: '900',
     color: COLORS.ink,
     letterSpacing: -0.5,
+    textAlign: 'center',
   },
   welcomeSub: {
-    fontSize: 15,
+    fontSize: 17,
     color: COLORS.gray,
-    marginTop: 4,
+    marginTop: 6,
     marginBottom: 24,
+    textAlign: 'center',
   },
 
   // Inputs
@@ -432,8 +499,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   inputLabel: {
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '800',
     color: COLORS.ink,
     marginBottom: 8,
   },
@@ -441,10 +508,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.field,
-    borderRadius: 16,
+    borderRadius: 28,
     borderWidth: 1.5,
     borderColor: 'transparent',
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
     height: 56,
   },
   inputFocused: {
@@ -461,7 +528,7 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     alignSelf: 'flex-end',
-    marginBottom: 22,
+    marginBottom: 14,
   },
   forgotPasswordText: {
     fontSize: 13,
@@ -471,30 +538,44 @@ const styles = StyleSheet.create({
 
   // Buttons
   loginButton: {
-    height: 60,
-    borderRadius: 18,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: COLORS.red,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: COLORS.red,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.28,
-    shadowRadius: 12,
-    elevation: 6,
   },
   buttonDisabled: {
     opacity: 0.7,
   },
   loginButtonText: {
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: '800',
     color: COLORS.white,
     letterSpacing: 0.3,
   },
+
+  // Register link row
+  registerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 18,
+  },
+  registerPrompt: {
+    fontSize: 15,
+    color: COLORS.ink,
+  },
+  registerLink: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: COLORS.red,
+  },
+
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 18,
   },
   divider: {
     flex: 1,
@@ -504,12 +585,13 @@ const styles = StyleSheet.create({
   dividerText: {
     marginHorizontal: 12,
     fontSize: 13,
-    color: COLORS.grayLight,
-    fontWeight: '500',
+    color: COLORS.gray,
+    fontWeight: '600',
+    letterSpacing: 0.5,
   },
   guestButton: {
     height: 56,
-    borderRadius: 18,
+    borderRadius: 28,
     backgroundColor: COLORS.redTint,
     flexDirection: 'row',
     alignItems: 'center',
@@ -519,22 +601,7 @@ const styles = StyleSheet.create({
   guestButtonText: {
     fontSize: 16,
     color: COLORS.red,
-    fontWeight: '700',
-  },
-  registerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  registerText: {
-    fontSize: 14,
-    color: COLORS.gray,
-  },
-  registerLinkText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: COLORS.red,
+    fontWeight: '800',
   },
 
   // Modal
@@ -588,10 +655,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.field,
-    borderRadius: 16,
+    borderRadius: 28,
     borderWidth: 1.5,
     borderColor: 'transparent',
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
     height: 56,
     width: '100%',
     marginBottom: 20,
@@ -604,7 +671,7 @@ const styles = StyleSheet.create({
   },
   resetButton: {
     height: 56,
-    borderRadius: 16,
+    borderRadius: 28,
     backgroundColor: COLORS.red,
     alignItems: 'center',
     justifyContent: 'center',

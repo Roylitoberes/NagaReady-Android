@@ -1456,8 +1456,6 @@ export default function TrackResponder({
     );
   };
 
-  const displayEta =
-    routeInfo.eta !== '--' ? `${routeInfo.eta} min` : trackingData.eta;
   const displayDistance =
     routeInfo.distance !== '--' ? routeInfo.distance : trackingData.distance;
 
@@ -1624,17 +1622,6 @@ export default function TrackResponder({
                   </Text>
                 </View>
               </View>
-              <View style={styles.infoItem}>
-                <View style={styles.infoIconContainer}>
-                  <Ionicons name="time-outline" size={17} color={COLORS.textPrimary} />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.infoLabel}>ETA</Text>
-                  <Text style={styles.infoValue} numberOfLines={2}>
-                    {displayEta}
-                  </Text>
-                </View>
-              </View>
             </View>
             <View style={[styles.infoRow, styles.infoRowSpaced]}>
               <View style={styles.infoItem}>
@@ -1737,7 +1724,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     paddingHorizontal: 16,
-    paddingTop: 12,
+    paddingTop: 48,   // was 12
     paddingBottom: 14,
   },
   backButton: {

@@ -57,8 +57,9 @@ const responsiveSpacing = (base: number, small: number, large: number) => {
   return base;
 };
 
-// ✅ FIXED EOC PHONE NUMBER - CANNOT BE CHANGED
+// ✅ FIXED EOC PHONE NUMBERS - CANNOT BE CHANGED
 const EOC_PHONE_NUMBER = '+639750998875';
+const EOC_PHONE_NUMBER_2 = '+639673751357';
 
 const emergencyTypes: EmergencyType[] = [
   { id: 'medical',  icon: 'medical',       label: 'Medical',  color: '#FF4444', bgColor: 'rgba(255, 68, 68, 0.15)',  solidBg: 'rgba(255, 68, 68, 0.25)',  smsCode: 'MED' },
@@ -341,7 +342,7 @@ export default function SMSEmergencyPage({
       const formattedMessage = `[${selected?.smsCode}] ${message}`;
 
       console.log('📨 Sending SMS to EOC...');
-      console.log('📱 To:', EOC_PHONE_NUMBER);
+      console.log('📱 To:', EOC_PHONE_NUMBER, '&', EOC_PHONE_NUMBER_2);
       console.log('📝 Message:', formattedMessage);
 
       const isAvailable = await SMS.isAvailableAsync();
@@ -356,7 +357,7 @@ export default function SMSEmergencyPage({
       }
 
       const { result } = await SMS.sendSMSAsync(
-        [EOC_PHONE_NUMBER],
+        [EOC_PHONE_NUMBER, EOC_PHONE_NUMBER_2],
         formattedMessage
       );
 
@@ -751,10 +752,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#0A0A0A',
   },
 
-  // HEADER
   headerGradient: {
     backgroundColor: '#B00000',
-    paddingTop: responsiveSpacing(20, 16, 26),
+    paddingTop: responsiveSpacing(56, 48, 64),   // was (20, 16, 26)
     paddingBottom: responsiveSpacing(20, 16, 26),
     borderBottomLeftRadius: responsiveSize(10, 8, 12),
     borderBottomRightRadius: responsiveSize(10, 8, 12),

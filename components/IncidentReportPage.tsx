@@ -868,14 +868,6 @@ export default function IncidentReportPage({
             <Text style={styles.authWarningText}>Please sign in to submit a report</Text>
           </View>
         )}
-        {isAuthenticated && userData && (
-          <View style={styles.authSuccess}>
-            <Ionicons name="checkmark-circle" size={responsiveSize(16, 14, 20)} color="#4CAF50" />
-            <Text style={styles.authSuccessText}>
-              Signed in as {userData.firstName || 'User'}
-            </Text>
-          </View>
-        )}
       </View>
 
       <ScrollView
@@ -908,7 +900,7 @@ export default function IncidentReportPage({
                   >
                     <Ionicons
                       name={type.icon as any}
-                      size={responsiveSize(28, 22, 33)}
+                      size={responsiveSize(38, 30, 44)}
                       color="#FFFFFF"
                     />
                   </View>
@@ -1209,7 +1201,7 @@ const styles = StyleSheet.create({
   },
   headerGradient: {
     backgroundColor: '#B00000',
-    paddingTop: responsiveSpacing(25, 20, 32),
+    paddingTop: responsiveSpacing(56, 48, 64),
     paddingBottom: responsiveSpacing(20, 16, 26),
     borderBottomLeftRadius: responsiveSize(10, 8, 12),
     borderBottomRightRadius: responsiveSize(10, 8, 12),
@@ -1304,23 +1296,25 @@ const styles = StyleSheet.create({
   },
   incidentButton: {
     width: '31%',
-    borderRadius: responsiveSize(14, 10, 18),
-    paddingVertical: responsiveSpacing(12, 8, 16),
+    minHeight: responsiveSize(135, 112, 155),
+    justifyContent: 'center',
+    borderRadius: responsiveSize(16, 12, 20),
+    paddingVertical: responsiveSpacing(22, 16, 28),
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'transparent',
   },
   incidentButtonSelected: { borderWidth: 2, borderColor: 'black' },
   incidentIconContainer: {
-    width: responsiveSize(56, 44, 66),
-    height: responsiveSize(56, 44, 66),
-    borderRadius: responsiveSize(28, 22, 33),
+    width: responsiveSize(72, 58, 84),
+    height: responsiveSize(72, 58, 84),
+    borderRadius: responsiveSize(36, 29, 42),
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: responsiveSpacing(8, 6, 12),
   },
   incidentButtonText: {
-    fontSize: responsiveSize(13, 11, 16),
+    fontSize: responsiveSize(15, 12, 18),
     fontWeight: '500',
     color: '#94A3B8',
     textAlign: 'center',

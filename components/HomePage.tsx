@@ -448,10 +448,9 @@ const styles = StyleSheet.create({
     paddingTop: responsiveSpacing(8, 4, 12),
   },
 
-  // HEADER STYLES
   headerCard: {
     backgroundColor: '#180707',
-    marginTop: responsiveSpacing(12, 8, 16),
+    marginTop: responsiveSpacing(48, 40, 56),   // was (12, 8, 16)
     marginBottom: responsiveSpacing(20, 14, 26),
     paddingVertical: responsiveSpacing(14, 10, 18),
     paddingHorizontal: responsiveSpacing(16, 12, 20),

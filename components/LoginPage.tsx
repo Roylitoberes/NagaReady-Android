@@ -5,9 +5,9 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
   Image,
   StatusBar,
+  Platform,
   useWindowDimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,18 +23,18 @@ interface LoginPageProps {
 
 // Design tokens
 const COLORS = {
-  red: '#B00000',
-  redDark: '#8C0000',
-  redTint: '#FDECEC',
+  red: '#E10000',
+  redDark: '#B00000',
+  black: '#141414',
   white: '#FFFFFF',
-  ink: '#1A1111',
-  gray: '#6B6464',
-  grayLight: '#9A9393',
-  handle: '#E6DEDE',
+  ink: '#0F0F0F',
+  gray: '#2B3445',
 };
 
+const STATUS_BAR = Platform.OS === 'ios' ? 64 : (StatusBar.currentHeight ?? 24) + 24;
+
 export default function LoginPage({ onLogin, onGuestContinue }: LoginPageProps) {
-  const { height } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
 
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showRegisterPage, setShowRegisterPage] = useState(false);
@@ -76,298 +76,241 @@ export default function LoginPage({ onLogin, onGuestContinue }: LoginPageProps) 
     );
   }
 
+  const bottomH = height * 0.56;
+
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.red} />
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
 
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-      >
-        {/* Header */}
-        <View style={styles.headerSection}>
-          {/* Big logo – no border, no box */}
-          <Image
-            source={require('../assets/adaptive-icon2.png')}
-            style={styles.logoImage}
-            resizeMode="contain"
-          />
+      {/* Top-right red swoosh */}
+      <View style={styles.topCircleBig} />
+      <View style={styles.topCircleDark} />
 
-          <Text style={styles.cityName}>
-            NAGA-<Text style={styles.cityNameHighlight}>READY</Text>
+      {/* Logo */}
+      <View style={styles.logoRow}>
+        <Image
+          source={require('../assets/adaptive-icon2.png')}
+          style={styles.logoImage}
+          resizeMode="contain"
+        />
+        <View style={styles.logoTextWrap}>
+          <Text style={styles.logoText}>
+            NAGA-<Text style={styles.logoTextRed}>READY</Text>
           </Text>
-
-          <Text style={styles.subtitle}>Emergency Response System</Text>
-
-          <View style={styles.locationPill}>
-            <Ionicons name="location-outline" size={14} color={COLORS.white} />
-            <Text style={styles.locationText}>Naga City, Cebu</Text>
-          </View>
-
-          {/* Feature highlights */}
-          <View style={styles.featuresRow}>
-            <View style={styles.featureItem}>
-              <View style={styles.featureIcon}>
-                <Ionicons name="megaphone-outline" size={22} color={COLORS.white} />
-              </View>
-              <Text style={styles.featureText}>Report{'\n'}incidents</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <View style={styles.featureIcon}>
-                <Ionicons name="navigate-outline" size={22} color={COLORS.white} />
-              </View>
-              <Text style={styles.featureText}>Track{'\n'}responders</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <View style={styles.featureIcon}>
-                <Ionicons name="chatbubble-ellipses-outline" size={22} color={COLORS.white} />
-              </View>
-              <Text style={styles.featureText}>SMS{'\n'}alerts</Text>
-            </View>
+          <View style={styles.pulseRow}>
+            <View style={styles.pulseLine} />
+            <Ionicons name="pulse" size={16} color={COLORS.red} />
+            <View style={styles.pulseLine} />
           </View>
         </View>
+      </View>
 
-        {/* White sheet – taller */}
-        <View style={[styles.sheet, { minHeight: height * 0.62 }]}>
-          <View style={styles.sheetHandle} />
+      {/* Title */}
+      <View style={styles.titleWrap}>
+        <Text style={styles.title}>Get Started</Text>
+        <Text style={styles.subtitle}>Start with sign up or sign in</Text>
+      </View>
 
-          <Text style={styles.sheetTitle}>Welcome</Text>
-          <Text style={styles.sheetSubtitle}>
-            Sign in to report emergencies and follow the response in real time.
+      {/* Bottom curved black area */}
+      <View style={[styles.bottomArea, { height: bottomH }]}>
+        {/* red wave behind */}
+        <View
+          style={{
+            position: 'absolute',
+            width: width * 1.6,
+            height: bottomH * 1.6,
+            borderRadius: width * 0.8,
+            left: -width * 0.3,
+            top: 0,
+            backgroundColor: COLORS.red,
+          }}
+        />
+        {/* black wave */}
+        <View
+          style={{
+            position: 'absolute',
+            width: width * 1.6,
+            height: bottomH * 1.6,
+            borderRadius: width * 0.8,
+            left: -width * 0.3,
+            top: 22,
+            backgroundColor: COLORS.black,
+          }}
+        />
+        {/* bottom-right red swoosh */}
+        <View style={[styles.bottomCircleDark, { right: -width * 0.45 }]} />
+        <View style={[styles.bottomCircle, { right: -width * 0.55 }]} />
+
+        {/* Buttons */}
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={styles.pillButton}
+            onPress={() => setShowLoginForm(true)}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.pillButtonText}>Login</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.pillButton}
+            onPress={() => setShowRegisterPage(true)}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.pillButtonText}>Create Account</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.guestButton}
+            onPress={onGuestContinue}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="person-outline" size={20} color={COLORS.red} />
+            <Text style={styles.guestButtonText}>Continue as Guest</Text>
+            <Ionicons name="arrow-forward" size={18} color={COLORS.red} />
+          </TouchableOpacity>
+
+          <Text style={styles.footerText}>
+            By continuing, you agree to our
+            <Text style={styles.linkText}> Terms of Service</Text> and
+            <Text style={styles.linkText}> Privacy Policy</Text>
           </Text>
-
-          <View style={styles.buttonsContainer}>
-            {/* Login – solid red */}
-            <TouchableOpacity
-              style={styles.loginButton}
-              onPress={() => setShowLoginForm(true)}
-              activeOpacity={0.85}
-            >
-              <Text style={styles.loginButtonText}>Login</Text>
-            </TouchableOpacity>
-
-            {/* Register – outlined red */}
-            <TouchableOpacity
-              style={styles.registerButton}
-              onPress={() => setShowRegisterPage(true)}
-              activeOpacity={0.85}
-            >
-              <Text style={styles.registerButtonText}>Create Account</Text>
-            </TouchableOpacity>
-
-            {/* Divider */}
-            <View style={styles.dividerRow}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>or</Text>
-              <View style={styles.dividerLine} />
-            </View>
-
-            {/* Guest – red */}
-            <TouchableOpacity
-              style={styles.guestButton}
-              onPress={onGuestContinue}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="person-outline" size={20} color={COLORS.red} />
-              <Text style={styles.guestButtonText}>Continue as Guest</Text>
-              <Ionicons name="arrow-forward" size={18} color={COLORS.red} />
-            </TouchableOpacity>
-          </View>
-
-          {/* Footer */}
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>
-              By continuing, you agree to our
-              <Text style={styles.linkText}> Terms of Service</Text> and
-              <Text style={styles.linkText}> Privacy Policy</Text>
-            </Text>
-          </View>
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  // Pure solid red background – no gradient, no decorations
   container: {
     flex: 1,
-    backgroundColor: COLORS.red,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'space-between',
+    backgroundColor: COLORS.white,
+    overflow: 'hidden',
   },
 
-  // Header
-  headerSection: {
-    flex: 1,
+  // Top-right decoration
+  topCircleBig: {
+    position: 'absolute',
+    top: -150,
+    right: -170,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    backgroundColor: COLORS.red,
+  },
+  topCircleDark: {
+    position: 'absolute',
+    top: -200,
+    right: -200,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    backgroundColor: COLORS.redDark,
+  },
+
+  // Logo
+  logoRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 8,
-    paddingBottom: 10,
+    paddingTop: STATUS_BAR,
     paddingHorizontal: 24,
+    gap: 12,
   },
   logoImage: {
-    width: 150,
-    height: 150,
-    marginBottom: 0,
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    backgroundColor: COLORS.black,
   },
-  cityName: {
-    fontSize: 40,
-    fontWeight: '800',
-    color: COLORS.white,
-    letterSpacing: 1.5,
+  logoTextWrap: {
+    alignItems: 'stretch',
   },
-  cityNameHighlight: {
-    color: '#FFD3D3',
+  logoText: {
+    fontSize: 26,
+    fontWeight: '900',
+    color: COLORS.ink,
+    letterSpacing: 0.5,
   },
-  subtitle: {
-    marginTop: 6,
-    fontSize: 15,
-    color: COLORS.white,
-    fontWeight: '500',
-    letterSpacing: 0.4,
-    opacity: 0.92,
+  logoTextRed: {
+    color: COLORS.red,
   },
-  locationPill: {
+  pulseRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
-    backgroundColor: 'rgba(255, 255, 255, 0.16)',
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 16,
-    marginTop: 14,
+    marginTop: 2,
   },
-  locationText: {
-    fontSize: 12,
-    color: COLORS.white,
-    fontWeight: '600',
+  pulseLine: {
+    flex: 1,
+    height: 2,
+    backgroundColor: COLORS.red,
   },
 
-  // Feature highlights
-  featuresRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 24,
-    marginTop: 12,
-  },
-  featureItem: {
-    alignItems: 'center',
-    width: 84,
-  },
-  featureIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.16)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  featureText: {
-    fontSize: 12,
-    color: COLORS.white,
-    textAlign: 'center',
-    lineHeight: 16,
-    fontWeight: '500',
-    opacity: 0.92,
-  },
-
-  // White sheet
-  sheet: {
-    backgroundColor: COLORS.white,
-    borderTopLeftRadius: 36,
-    borderTopRightRadius: 36,
+  // Title
+  titleWrap: {
     paddingHorizontal: 24,
-    paddingTop: 14,
-    paddingBottom: 32,
+    marginTop: 48,
+    alignItems: 'center',
   },
-  sheetHandle: {
-    alignSelf: 'center',
-    width: 44,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: COLORS.handle,
-    marginBottom: 26,
-  },
-  sheetTitle: {
-    fontSize: 28,
-    fontWeight: '800',
+  title: {
+    fontSize: 42,
+    fontWeight: '900',
     color: COLORS.ink,
     letterSpacing: -0.5,
-    marginBottom: 6,
+    textAlign: 'center',
   },
-  sheetSubtitle: {
-    fontSize: 15,
-    lineHeight: 22,
+  subtitle: {
+    marginTop: 10,
+    fontSize: 17,
     color: COLORS.gray,
+    textAlign: 'center',
   },
 
-  // Buttons – taller
-  buttonsContainer: {
-    marginTop: 28,
+  // Bottom area
+  bottomArea: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    overflow: 'hidden',
   },
-  loginButton: {
-    height: 60,
-    borderRadius: 18,
+  bottomCircleDark: {
+    position: 'absolute',
+    bottom: -250,
+    width: 420,
+    height: 420,
+    borderRadius: 210,
+    backgroundColor: COLORS.redDark,
+  },
+  bottomCircle: {
+    position: 'absolute',
+    bottom: -300,
+    width: 420,
+    height: 420,
+    borderRadius: 210,
     backgroundColor: COLORS.red,
+  },
+  buttonsContainer: {
+    position: 'absolute',
+    left: 24,
+    right: 24,
+    bottom: Platform.OS === 'ios' ? 40 : 64,
+  },
+  pillButton: {
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: COLORS.white,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 14,
-    shadowColor: COLORS.red,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.28,
-    shadowRadius: 12,
-    elevation: 6,
   },
-  loginButtonText: {
+  pillButtonText: {
     fontSize: 17,
-    fontWeight: '700',
-    color: COLORS.white,
-    letterSpacing: 0.3,
+    fontWeight: '800',
+    color: COLORS.ink,
   },
-  registerButton: {
-    height: 60,
-    borderRadius: 18,
-    borderWidth: 2,
-    borderColor: COLORS.red,
-    backgroundColor: COLORS.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  registerButtonText: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: COLORS.red,
-    letterSpacing: 0.3,
-  },
-
-  // Divider
-  dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 18,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: COLORS.handle,
-  },
-  dividerText: {
-    marginHorizontal: 12,
-    fontSize: 13,
-    color: COLORS.grayLight,
-    fontWeight: '500',
-  },
-
-  // Guest – red
   guestButton: {
-    height: 56,
-    borderRadius: 18,
-    backgroundColor: COLORS.redTint,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: COLORS.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -375,24 +318,19 @@ const styles = StyleSheet.create({
   },
   guestButtonText: {
     fontSize: 16,
+    fontWeight: '800',
     color: COLORS.red,
-    fontWeight: '700',
-  },
-
-  // Footer
-  footer: {
-    marginTop: 'auto',
-    paddingTop: 24,
-    alignItems: 'center',
   },
   footerText: {
-    fontSize: 12,
-    color: COLORS.grayLight,
+    marginTop: 12,
+    paddingHorizontal: 8,
+    fontSize: 10.5,
+    color: 'rgba(255, 255, 255, 0.75)',
     textAlign: 'center',
-    lineHeight: 18,
+    lineHeight: 16,
   },
   linkText: {
-    color: COLORS.red,
+    color: COLORS.white,
     fontWeight: '700',
   },
 });
